@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "betting_agent"
+  site-url: "https://MeherKharbachi.github.io/betting_agent"
+  description: "Simulate a trading strategy using a custom football betting environment."
+  repo-branch: main
+  repo-url: "https://github.com/MeherKharbachi/betting_agent"
