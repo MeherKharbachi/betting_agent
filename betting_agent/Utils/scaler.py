@@ -31,33 +31,36 @@ class CustomScaler(Scaler):
         x: Observation,  # Observation.
     ) -> np.ndarray:  # Observation features, shape=(1, new_shape), new_shape is the number of features extracted from the database.
         "Returns processed observation."
+        
+        observation = x
+        if isinstance(observation, Observation):
+            
+            # Real-Analytics Home Team Id.
+            ra_home_team_id = observation.ra_teams_ids[0]
 
-        # Real-Analytics Home Team Id.
-        ra_home_team_id = x.ra_teams_ids[0]
+            # Real-Analytics Away Team Id.
+            ra_away_team_id = observation.ra_teams_ids[1]
 
-        # Real-Analytics Away Team Id.
-        ra_away_team_id = x.ra_teams_ids[1]
+            # Game Date.
+            game_date = observation.game_date
 
-        # Game Date.
-        game_date = x.game_date
+            # 1X2 and Asian Handicap odds.
+            odds = observation.numerical_observation[0][25:]
 
-        # 1X2 and Asian Handicap odds.
-        odds = x.numerical_observation[0][25:]
+            # AH Line.
+            ah_line = observation.ah_line
 
-        # AH Line.
-        ah_line = x.ah_line
-
-        # Extract Home and Away team features
-        home_team_feats = self.get_team_features(
-            team_id=ra_home_team_id, date=game_date
-        )
-        away_team_feats = self.get_team_features(
-            team_id=ra_away_team_id, date=game_date
-        )
-        # Concatenate all features (Home and Away teams features + 1X2 and AH odds).
-        observation = np.hstack(
-            (home_team_feats, away_team_feats, odds, ah_line)
-        ).reshape(1, -1)
+            # Extract Home and Away team features
+            home_team_feats = self.get_team_features(
+                team_id=ra_home_team_id, date=game_date
+            )
+            away_team_feats = self.get_team_features(
+                team_id=ra_away_team_id, date=game_date
+            )
+            # Concatenate all features (Home and Away teams features + 1X2 and AH odds).
+            observation = np.hstack(
+                (home_team_feats, away_team_feats, odds, ah_line)
+            ).reshape(1, -1)
 
         return observation
 
