@@ -31,9 +31,9 @@ class CustomEncoder(nn.Module):
         observation_shape = NEW_OBSERVATION_SHAPE
         self.feature_size = feature_size
         # First Layer.
-        self.fc1 = nn.Linear(observation_shape[0], 64)
+        self.fc1 = nn.Linear(observation_shape[0], n_units)
         # 2nd Layer.
-        self.fc2 = nn.Linear(64, feature_size)
+        self.fc2 = nn.Linear(n_units, feature_size)
 
     def forward(
         self,
