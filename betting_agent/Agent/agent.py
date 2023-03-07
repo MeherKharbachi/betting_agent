@@ -95,16 +95,17 @@ def launch_training(
     n_steps_per_epoch: int = 50,  # The number of steps per epoch.
     update_start_step: int = 50,  #  The steps before starting updates.
     algo: d3rlpy.algos = DQN,  # D3rlpy RL algorithm.
-    algo_batch_size=32,  #  Mini-batch size.
-    algo_learning_rate=2.5e-4,  # Algo learning rate.
-    algo_target_update_interval=100,  # Interval to update the target network.
+    algo_batch_size: int = 32,  #  Mini-batch size.
+    algo_learning_rate: float = 2.5e-4,  # Algo learning rate.
+    algo_target_update_interval: int = 100,  # Interval to update the target network.
     algo_scaler: Scaler = CustomScaler,  # The scaler for data transformation.
     optimizer: torch.optim = Adam,  # Algo Optimizer.
-    optimizer_weight_decay=1e-4,  # Optimizer weight decay.
-    maxlen_buffer=1000000,  #  The maximum number of data length.
-    explorer_start_epsilon=1.0,  # The beginning epsilon.
-    explorer_end_epsilon=0.1,  # The end epsilon.
-    explorer_duration=100,  # The scheduling duration.
+    optimizer_weight_decay: float = 1e-4,  # Optimizer weight decay.
+    maxlen_buffer: int = 1000000,  #  The maximum number of data length.
+    explorer_start_epsilon: float = 1.0,  # The beginning epsilon.
+    explorer_end_epsilon: float = 0.1,  # The end epsilon.
+    explorer_duration: int = 100,  # The scheduling duration.
+    eval_epsilon: float = 0.3,  # Greedy-epsilon for evaluation.
     show_progress: bool = True,  # Flag to show progress bar for iterations.
     save_metrics: bool = True,  # Flag to record metrics. If False, the log directory is not created and the model parameters are not saved.
 ):
@@ -125,6 +126,7 @@ def launch_training(
         explorer_duration=explorer_duration,
     )
     # Launch training.
+    eval_env = BettingEnv(fixtures)
     rl_algo.fit_online(
         env,  # Gym environment.
         buffer,  # Buffer.
@@ -134,4 +136,6 @@ def launch_training(
         update_start_step=update_start_step,  # Parameter update starts after 'update_start_step' steps.
         save_metrics=save_metrics,  # Save metrics.
         show_progress=show_progress,  # Show progress.
+        eval_env=eval_env,  # Environment for evaluation.
+        eval_epsilon=eval_epsilon,  # Greedy-epsilon for evaluation.
     )

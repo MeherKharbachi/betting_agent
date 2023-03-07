@@ -31,10 +31,10 @@ class CustomScaler(Scaler):
         x: Observation,  # Observation.
     ) -> np.ndarray:  # Observation features, shape=(1, new_shape), new_shape is the number of features extracted from the database.
         "Returns processed observation."
-        
+
         observation = x
         if isinstance(observation, Observation):
-            
+
             # Real-Analytics Home Team Id.
             ra_home_team_id = observation.ra_teams_ids[0]
 
@@ -45,6 +45,10 @@ class CustomScaler(Scaler):
             game_date = observation.game_date
 
             # 1X2 and Asian Handicap odds.
+            if observation.numerical_observation.shape[0] != 1:
+                observation.numerical_observation = (
+                    observation.numerical_observation.reshape(1, -1)
+                )
             odds = observation.numerical_observation[0][25:]
 
             # AH Line.

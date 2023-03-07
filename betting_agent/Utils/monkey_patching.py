@@ -20,6 +20,7 @@ from d3rlpy.online.iterators import _setup_algo
 from d3rlpy.metrics.scorer import evaluate_on_environment
 from d3rlpy.online.buffers import ReplayBuffer
 from typing import Any, Callable, Dict, List, Optional, Union
+from torch.utils.data._utils.collate import default_collate
 from tqdm.auto import trange
 
 # %% ../../nbs/Utils/03_monkey_patching.ipynb 7
@@ -51,8 +52,10 @@ def torch_api(
                 if isinstance(val, torch.Tensor) or isinstance(val, Observation):
                     tensor = val
                 elif isinstance(val, list):
+                    val = list(self.scaler.transform(v) for v in val)
                     tensor = default_collate(val)
-                    tensor = tensor.to(self.device)
+                    tensor = tensor[0].to(self.device).float()
+
                 elif isinstance(val, np.ndarray):
                     if val.dtype == np.uint8:
                         dtype = torch.uint8

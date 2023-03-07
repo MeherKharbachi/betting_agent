@@ -42,7 +42,7 @@ from betting_env.utils.data_extractor import *
 
 
 fixtures = data_aggregator(
-    db_hosts=DB_HOSTS, config=CONFIG, db_host="prod_atlas", limit=4
+    db_hosts=DB_HOSTS, config=CONFIG, db_host="prod_atlas", limit=50
 )
 fixtures.head()
 
@@ -205,6 +205,8 @@ def launch_training(
         explorer_duration=explorer_duration,
     )
     # Launch training.
+
+    eval_env = BettingEnv(fixtures)
     rl_algo.fit_online(
         env,  # Gym environment.
         buffer,  # Buffer.
@@ -214,6 +216,9 @@ def launch_training(
         update_start_step=update_start_step,  # Parameter update starts after 'update_start_step' steps.
         save_metrics=save_metrics,  # Save metrics.
         show_progress=show_progress,  # Show progress.
+        eval_env = eval_env,
+        eval_epsilon = 0.3,
+
     )
 
 
@@ -226,10 +231,10 @@ launch_training(
     algo_scaler=CustomScaler,
     optimizer=Adam,
     explorer_duration=1000,
-    training_steps=1000,
+    training_steps=3000,
     n_steps_per_epoch=50,  
     update_start_step=50,
-    save_metrics=True
+    save_metrics=True,
 )
 
 
