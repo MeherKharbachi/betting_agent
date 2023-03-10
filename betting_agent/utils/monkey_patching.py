@@ -4,11 +4,14 @@
 __all__ = ['torch_api', 'append', 'add_last_step', 'train_single_env', 'fit_online']
 
 # %% ../../nbs/Utils/03_monkey_patching.ipynb 3
+from typing import Any, Callable, Dict, List, Optional, Union
 import numpy as np
-import torch
-import gym
-from betting_env.betting_env import Observation
 from inspect import signature
+import torch
+from torch.utils.data._utils.collate import default_collate
+import gym
+from tqdm.auto import trange
+
 from d3rlpy.torch_utility import _WithDeviceAndScalerProtocol, TorchMiniBatch
 from d3rlpy.dataset import TransitionMiniBatch, Transition
 from d3rlpy.online.iterators import AlgoProtocol
@@ -19,9 +22,8 @@ from d3rlpy.preprocessing.stack import StackedObservation
 from d3rlpy.online.iterators import _setup_algo
 from d3rlpy.metrics.scorer import evaluate_on_environment
 from d3rlpy.online.buffers import ReplayBuffer
-from typing import Any, Callable, Dict, List, Optional, Union
-from torch.utils.data._utils.collate import default_collate
-from tqdm.auto import trange
+
+from betting_env.betting_env import Observation
 
 # %% ../../nbs/Utils/03_monkey_patching.ipynb 7
 def torch_api(
@@ -55,7 +57,6 @@ def torch_api(
                     val = list(self.scaler.transform(v) for v in val)
                     tensor = default_collate(val)
                     tensor = tensor[0].to(self.device).float()
-
                 elif isinstance(val, np.ndarray):
                     if val.dtype == np.uint8:
                         dtype = torch.uint8

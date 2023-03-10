@@ -3,10 +3,11 @@
 # %% auto 0
 __all__ = ['CONFIG', 'DB_HOSTS']
 
-# %% ../../nbs/Config/000_config.ipynb 4
+# %% ../../nbs/Config/000_config.ipynb 3
 import toml
 import logging
 
+# %% ../../nbs/Config/000_config.ipynb 4
 # Read local `config.toml` file.
 CONFIG = toml.load("/secrets/config.toml")
 
